@@ -2,23 +2,38 @@ import React from "react";
 export default function Main() {
   const variable = 1;
   const [count, setCount] = React.useState(0);
-  const [meme, setMeme] = React.useState([0]);
+  const [allMeme, setAllMeme] = React.useState([0]);
+  const [meme, setMeme] = React.useState({
+    topText: "One does not simply",
+    bottomText: "Walk into Mordor",
+    randomImage: "http://i.imgflip.com/1bij.jpg",
+  });
+
   function handleChange(event) {
-    setCount((prevCount) => prevCount + 1);
-    console.log(meme[count].name);
+    setMeme((prevMeme) => {
+      return {
+        ...prevMeme,
+        [event.target.name]: event.target.value,
+      };
+    });
+  }
+  function Gennew(event) {
+    setCount(Math.floor(Math.random() * 100));
+    console.log(allMeme[count].name);
   }
 
   React.useEffect(() => {
     fetch("https://api.imgflip.com/get_memes")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        setMeme(data.data.memes);
+        // console.log(Math.floor(Math.random() * 100));
+        setAllMeme(data.data.memes);
       });
-  }, [variable]);
+  }, []);
+  // test
   return (
     <main>
-      <h1>{meme[count].name}</h1>
+      <h1>{allMeme[count].name}</h1>
       <div className="form">
         <label>
           Top Text
@@ -39,10 +54,10 @@ export default function Main() {
             onChange={handleChange}
           />
         </label>
-        <button onClick={handleChange}>Get a new meme image 🖼</button>
+        <button onClick={Gennew}>Get a new meme image 🖼</button>
       </div>
       <div className="meme">
-        <img src={meme[count].url} />
+        <img src={allMeme[count].url} />
         <span className="top">{meme.topText}</span>
         <span className="bottom">{meme.bottomText}</span>
       </div>
